@@ -3,9 +3,8 @@
 int main(void)
 {
     int server_fd, client_fd;
-    sockaddr_in client_addr;
+    sockaddr_in server_addr, client_addr;
     socklen_t addr_size;
-    char buffer[SIZE];
 
     // Create client socket and validate
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -33,10 +32,10 @@ int main(void)
         return -3;
     }
 
-    printf("[+] Listening for connections...");
+    printf("[+] Listening for connections...\n");
     addr_size = sizeof(client_addr);
 
-    while(true) {
+    while (true) {
 
         // Attempt connection to client and validate
         if ((client_fd = accept(server_fd, (sockaddr*)&client_addr, &addr_size)) < 0) {
@@ -44,15 +43,16 @@ int main(void)
             return -4;
         } 
 
-        printf("[+] Connected to client with address %d.\n", inet_ntoa(client_addr.sin_addr));
-        
-        
+        printf("[+] Connected to client with socket FD %d.\n", client_fd);
+
         if (!save_file(client_fd)) {
-            perror("[-] Failed to save the file");
+            printf("[-] Failed to save the file.\n");
             return -5;
         }
-        
-        printf("[+] Data recieved from client and saved.");
+
+        printf("[+] File saved successfully.\n");
+        close(client_fd);
+        printf("[+] Connection closed with client.\n");
     }
 
     return 0;    

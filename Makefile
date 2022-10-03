@@ -21,3 +21,4 @@ tcpclient.o: tcpclient.c $(INC)/common.c
 
 clean:
 	rm ./*.o
+	rm ./bin/*

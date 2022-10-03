@@ -4,7 +4,7 @@ int main(int argc, char** argv)
 {
     // Validate command line args
     if (argc != 2) {
-        printf("[-] Incorrect arguments. Should be `tcpclient <file>`.");
+        printf("[-] Incorrect arguments. Should be `tcpclient <file>`\n.");
         return -1;
     }
 
@@ -24,6 +24,8 @@ int main(int argc, char** argv)
         return -3;
     }
 
+    printf("[+] Read file with name `%s`.\n", file_name);
+
     // Create client socket and validate
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("[-] Error creating socket");
@@ -31,14 +33,18 @@ int main(int argc, char** argv)
     }
 
     printf("[+] Created socket with FD %d.\n", client_fd);
+    bzero(&server_addr, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(PORT);
+    inet_aton(HOST, &server_addr.sin_addr);
 
     // Attempt connection to server and validate
     if (connect(client_fd, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-        perror("[-] Error connecting to client");
+        perror("[-] Error connecting to server");
         return -5;
     }
 
-    printf("[+] Connected to server with address %d.\n", HOST);
+    printf("[+] Connected to server with address %s.\n", HOST);
 
     // Send the file to server and validate
     if (!send_file(fp, client_fd)) {

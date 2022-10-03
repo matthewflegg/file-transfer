@@ -43,9 +43,6 @@ typedef struct sockaddr_in sockaddr_in;
 // Redefinition of struct tm, removing the `struct` keyword for more concise types
 typedef struct tm tm;
 
-// Global variable containing the address of the server
-static sockaddr_in server_addr;
-
 /**
  * @brief  Sends `fp` to socket connected to `socket_fd`
  * @param  fp: A pointer to the file to send

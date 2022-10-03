@@ -36,15 +36,16 @@ bool save_file(int socket_fd)
 
     // Read into `buffer` + write `buffer` into `fp` `SIZE` bytes at a time
     while (true) {
-        if (recv(socket_fd, buffer, SIZE, 0) < 0) {
-            return false;
+        if (recv(socket_fd, buffer, sizeof(buffer), 0) <= 0) {
+            break;
         }
 
         // Write data into the file
-        fprintf(fp, "%s", buffer);
+        fprintf(fp, buffer);
         bzero(buffer, SIZE);
     }
 
+    fclose(fp);
     return true;
 }
 
@@ -70,8 +71,8 @@ bool validate_file_extension(char* file_name, int file_name_len, char* extension
      * If we find one that doesn't, return false
      * 
      */
-    for (int i = file_name_len-1; i > file_name_len-extension_len; i--) {
-        if (file_name[i] != extension[i]) {
+    for (int i = 0; i < extension_len; i++) {
+        if (file_name[file_name_len - i] != extension[extension_len - i]) {
             return false;
         }
     }
